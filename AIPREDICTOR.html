@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Color Prediction</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            overflow: hidden;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #ff7e5f, #feb47b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+        
+        header p {
+            color: #ddd;
+            font-size: 1.1rem;
+        }
+        
+        .input-section {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 25px;
+            gap: 15px;
+        }
+        
+        .input-section input {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1.1rem;
+            outline: none;
+            transition: all 0.3s;
+        }
+        
+        .input-section input:focus {
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+        }
+        
+        .input-section input::placeholder {
+            color: #bbb;
+        }
+        
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn-result {
+            background: linear-gradient(45deg, #00c853, #64dd17);
+            color: white;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        
+        .btn-result:hover {
+            background: linear-gradient(45deg, #00e676, #76ff03);
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(0, 230, 118, 0.4);
+        }
+        
+        .btn-clear {
+            background: linear-gradient(45deg, #ff5252, #ff1744);
+            color: white;
+            margin-top: 15px;
+            padding: 10px 20px;
+            font-size: 1rem;
+        }
+        
+        .btn-clear:hover {
+            background: linear-gradient(45deg, #ff1744, #f50057);
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(255, 23, 68, 0.4);
+        }
+        
+        .btn-result:active, .btn-clear:active {
+            transform: translateY(0);
+        }
+        
+        .timer {
+            text-align: center;
+            font-size: 1.5rem;
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        
+        .timer span {
+            color: #ff5252;
+            font-weight: bold;
+            font-size: 2rem;
+        }
+        
+        .result-display {
+            display: flex;
+            justify-content: center;
+            margin: 30px 0;
+        }
+        
+        .main-result {
+            padding: 30px 60px;
+            border-radius: 15px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 2.5rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .main-result::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            z-index: -1;
+            border-radius: 20px;
+            background: linear-gradient(45deg, #ff007f, #ff5500, #ff007f);
+            animation: borderGlow 3s linear infinite;
+            opacity: 0.7;
+        }
+        
+        @keyframes borderGlow {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+        
+        .big {
+            background: linear-gradient(45deg, #00c853, #64dd17);
+            color: white;
+        }
+        
+        .small {
+            background: linear-gradient(45deg, #ff5252, #ff1744);
+            color: white;
+        }
+        
+        .color-display {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        
+        .color-result {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin: 0 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        .green {
+            background: linear-gradient(45deg, #00c853, #64dd17);
+        }
+        
+        .red {
+            background: linear-gradient(45deg, #ff5252, #ff1744);
+        }
+        
+        .history {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            position: relative;
+        }
+        
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .history h3 {
+            color: #ff7e5f;
+        }
+        
+        .history-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            min-height: 50px;
+        }
+        
+        .history-item {
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .empty-history {
+            color: #aaa;
+            font-style: italic;
+            width: 100%;
+            text-align: center;
+            padding: 15px;
+        }
+        
+        .instructions {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        
+        .instructions h3 {
+            margin-bottom: 15px;
+            text-align: center;
+            color: #ff7e5f;
+        }
+        
+        .instructions ul {
+            list-style-type: none;
+            padding-left: 20px;
+        }
+        
+        .instructions li {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .instructions li i {
+            color: #00e676;
+            margin-right: 10px;
+            margin-top: 5px;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #bbb;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 600px) {
+            .input-section {
+                flex-direction: column;
+            }
+            
+            .main-result {
+                padding: 20px 40px;
+                font-size: 2rem;
+            }
+            
+            .color-result {
+                width: 80px;
+                height: 80px;
+                font-size: 1rem;
+            }
+            
+            header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .history-header {
+                flex-direction: column;
+                gap: 10px;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-crystal-ball"></i> Premium Color Prediction</h1>
+            <p>Predict the next outcome with advanced algorithm</p>
+        </header>
+        
+        <div class="input-section">
+            <input type="number" id="periodNumber" placeholder="Enter Period Number">
+            <button class="btn btn-result" id="resultBtn">
+                <i class="fas fa-play-circle"></i> &nbsp; Generate Result
+            </button>
+        </div>
+        
+        <div class="timer">
+            Next result in: <span id="countdown">40</span> seconds
+        </div>
+        
+        <div class="result-display">
+            <div class="main-result big" id="mainResult">
+                Big
+            </div>
+        </div>
+        
+        <div class="color-display">
+            <div class="color-result green" id="colorResult">
+                Green
+            </div>
+        </div>
+        
+        <div class="history">
+            <div class="history-header">
+                <h3><i class="fas fa-history"></i> Result History</h3>
+                <button class="btn btn-clear" id="clearHistoryBtn">
+                    <i class="fas fa-trash"></i> &nbsp; Clear History
+                </button>
+            </div>
+            <div class="history-items" id="historyItems">
+                <div class="empty-history">No history yet. Generate results to see them here.</div>
+            </div>
+        </div>
+        
+        <div class="instructions">
+            <h3><i class="fas fa-info-circle"></i> How It Works</h3>
+            <ul>
+                <li><i class="fas fa-check-circle"></i> Enter a period number and click "Generate Result"</li>
+                <li><i class="fas fa-check-circle"></i> Each click generates either "Big" (Green) or "Small" (Red)</li>
+                <li><i class="fas fa-check-circle"></i> The color display shows the result color</li>
+                <li><i class="fas fa-check-circle"></i> The countdown timer will reset after each result generation</li>
+                <li><i class="fas fa-check-circle"></i> Use "Clear History" to remove all previous results</li>
+            </ul>
+        </div>
+        
+        <footer>
+            <p>© 2023 Premium Color Prediction | For Entertainment Purposes Only</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const resultBtn = document.getElementById('resultBtn');
+            const clearHistoryBtn = document.getElementById('clearHistoryBtn');
+            const periodInput = document.getElementById('periodNumber');
+            const mainResult = document.getElementById('mainResult');
+            const colorResult = document.getElementById('colorResult');
+            const historyItems = document.getElementById('historyItems');
+            const countdownEl = document.getElementById('countdown');
+            
+            let countdown = 40;
+            let countdownInterval;
+            
+            // Start the initial countdown
+            startCountdown();
+            
+            resultBtn.addEventListener('click', function() {
+                // Validate input
+                if (!periodInput.value) {
+                    alert('Please enter a period number');
+                    return;
+                }
+                
+                // Reset countdown
+                resetCountdown();
+                
+                // Generate random result (Big or Small)
+                const isBig = Math.random() > 0.5;
+                const resultType = isBig ? 'big' : 'small';
+                const resultText = isBig ? 'Big' : 'Small';
+                const colorType = isBig ? 'green' : 'red';
+                const colorText = isBig ? 'Green' : 'Red';
+                
+                // Update main result display
+                mainResult.textContent = resultText;
+                mainResult.className = 'main-result ' + resultType;
+                
+                // Update color result display
+                colorResult.textContent = colorText;
+                colorResult.className = 'color-result ' + colorType;
+                
+                // Remove empty history message if it exists
+                const emptyHistory = historyItems.querySelector('.empty-history');
+                if (emptyHistory) {
+                    emptyHistory.remove();
+                }
+                
+                // Add to history
+                const historyItem = document.createElement('div');
+                historyItem.className = `history-item ${resultType}`;
+                historyItem.textContent = `Period ${periodInput.value}: ${resultText} (${colorText})`;
+                historyItems.insertBefore(historyItem, historyItems.firstChild);
+                
+                // Limit history to 10 items
+                if (historyItems.children.length > 10) {
+                    historyItems.removeChild(historyItems.lastChild);
+                }
+                
+                // Increment period number for next input
+                periodInput.value = parseInt(periodInput.value) + 1;
+            });
+            
+            clearHistoryBtn.addEventListener('click', function() {
+                // Clear all history items
+                historyItems.innerHTML = '';
+                
+                // Add empty history message
+                const emptyHistory = document.createElement('div');
+                emptyHistory.className = 'empty-history';
+                emptyHistory.textContent = 'No history yet. Generate results to see them here.';
+                historyItems.appendChild(emptyHistory);
+            });
+            
+            function startCountdown() {
+                clearInterval(countdownInterval);
+                countdown = 40;
+                updateCountdown();
+                
+                countdownInterval = setInterval(() => {
+                    countdown--;
+                    updateCountdown();
+                    
+                    if (countdown <= 0) {
+                        clearInterval(countdownInterval);
+                        // Auto-generate result when countdown reaches 0
+                        if (!periodInput.value) periodInput.value = 1001;
+                        resultBtn.click();
+                    }
+                }, 1000);
+            }
+            
+            function resetCountdown() {
+                clearInterval(countdownInterval);
+                startCountdown();
+            }
+            
+            function updateCountdown() {
+                countdownEl.textContent = countdown;
+                
+                // Change color when countdown is low
+                if (countdown <= 10) {
+                    countdownEl.style.color = '#ff1744';
+                    countdownEl.style.textShadow = '0 0 10px rgba(255, 23, 68, 0.7)';
+                } else {
+                    countdownEl.style.color = '#ff5252';
+                    countdownEl.style.textShadow = 'none';
+                }
+            }
+        });
+    </script>
+</body>
+</html>
